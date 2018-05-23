@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Vector;
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
@@ -53,8 +54,19 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
 
-                    mCascadeEyes = new CascadeClassifier(initAssetFile("haarcascade_eye.xml"));
-                    mCascadeFace = new CascadeClassifier(initAssetFile("haarcascade_frontalface_default.xml"));
+                    String path = initAssetFile("haarcascade_eye.xml");
+                    mCascadeEyes = new CascadeClassifier(path);
+                    if (mCascadeEyes.empty()){
+                        Log.i(TAG, "eyes empty");
+                        mCascadeEyes = null;
+                    }
+
+                    String facePath = initAssetFile("haarcascade_frontalface_default.xml");
+                    mCascadeFace = new CascadeClassifier(facePath);
+                    if (mCascadeFace.empty()){
+                        Log.i(TAG, "face empty");
+                        mCascadeFace = null;
+                    }
                 } break;
                 default:
                 {
@@ -80,7 +92,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.tutorial1_activity_java_surface_view);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
@@ -127,14 +138,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Imgproc.rectangle(col, foo.tl(), foo.br(), new Scalar(0, 0, 255), 3);
         return col;
         */
+
         Mat gray = inputFrame.gray();
-
         Mat col  = inputFrame.rgba();
-
         Mat tmp = gray.clone();
+
         mFaces = new MatOfRect();
-        
-        mCascadeFace.detectMultiScale(gray, mFaces);
+
+        MatOfRect faceVectors = new MatOfRect();
+        //mCascadeFace.detectMultiScale(gray, faceVectors);
+
+        //mCascadeFace.detectMultiScale(gray, mFaces);
 
         Log.i(TAG, "faces" + mFaces.total());
         //Imgproc.Canny(gray, tmp, 80, 100);
