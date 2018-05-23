@@ -54,8 +54,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
 
-                    String path = initAssetFile("haarcascade_eye.xml");
-                    mCascadeEyes = new CascadeClassifier(path);
+                    String eyePath = initAssetFile("haarcascade_eye.xml");
+                    mCascadeEyes = new CascadeClassifier(eyePath);
                     if (mCascadeEyes.empty()){
                         Log.i(TAG, "eyes empty");
                         mCascadeEyes = null;
@@ -144,13 +144,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Mat tmp = gray.clone();
 
         mFaces = new MatOfRect();
+        /*mCascadeFace.detectMultiScale(gray, mFaces);
+        Log.i(TAG, "faces" + mFaces.rows() + " " + mFaces.cols());
+        Rect[] facesArray = mFaces.toArray();
+        for (Rect face : facesArray){
+            Imgproc.rectangle(image, new Point(face.x, face.y), 
+                  new Point(face.x + face.width, face.y + face.height),
+                  new Scalar(0, 255, 0));
 
-        MatOfRect faceVectors = new MatOfRect();
-        //mCascadeFace.detectMultiScale(gray, faceVectors);
+        }*/
 
-        //mCascadeFace.detectMultiScale(gray, mFaces);
 
-        Log.i(TAG, "faces" + mFaces.total());
         //Imgproc.Canny(gray, tmp, 80, 100);
         Imgproc.cvtColor(tmp, col, Imgproc.COLOR_GRAY2RGBA, 4);
 
